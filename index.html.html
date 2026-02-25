@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0f1115" />
+  <title>JMNail Calculadora</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <!-- Fuente (opcional pero recomendado para que se vea como en tu diseño) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet">
+</head>
+
+<body style="margin:0;background:#0b0b0b;">
+
+<div class="jmn-calculadora">
+
+  <div class="jmn-top">
+    <div class="jmn-badge">JMNail Calculadora</div>
+    <h2>Calcula Tus Precios</h2>
+    <p class="subtitle">Calcula tu costo real por servicio con desglose claro por cliente</p>
+  </div>
+
+  <div class="jmn-blocks">
+
+    <!-- BLOQUE 0: NOMBRE DEL SERVICIO -->
+    <div class="jmn-block">
+      <div class="jmn-block-head">
+        <h3>Nombre del servicio</h3>
+        <span class="jmn-chip">Opcional</span>
+      </div>
+
+      <label>Escribe el nombre (ej: Soft Gel / Polygel / Retoque)</label>
+      <input id="servicioNombre" type="text" placeholder="Ej: Soft Gel Premium">
+      <div class="jmn-mini">Esto aparecerá en el resumen para copiar.</div>
+    </div>
+
+    <!-- BLOQUE 1: MATERIAL -->
+    <div class="jmn-block">
+      <div class="jmn-block-head">
+        <h3>1) Material por servicio</h3>
+        <span class="jmn-chip">Directo</span>
+      </div>
+
+      <label>Costo de material gastado por servicio</label>
+      <input id="material" type="text" inputmode="decimal" placeholder="Ej: 5.80 o 5,80">
+
+      <!-- NUEVO: MERMA 5% - 10% -->
+      <div class="jmn-merma">
+        <div class="jmn-merma-top">
+          <label style="margin:0;">Merma de material (5% a 10%)</label>
+          <div class="jmn-merma-val"><span id="mermaVal">8</span>%</div>
+        </div>
+        <input id="merma" class="jmn-range" type="range" min="5" max="10" step="0.5" value="8">
+      </div>
+
+      <div class="jmn-calcrow">
+        <span>Material + merma (ajustado)</span>
+        <b id="materialOut">$0.00</b>
+      </div>
+
+      <div class="jmn-mini">Incluye limas, geles, acrílico, tips, guantes, desechables, etc.</div>
+    </div>
+
+    <!-- BLOQUE 2: MANO DE OBRA -->
+    <div class="jmn-block">
+      <div class="jmn-block-head">
+        <h3>2) Mano de obra</h3>
+        <span class="jmn-chip">Tiempo × Hora</span>
+      </div>
+
+      <div class="jmn-2col">
+        <div>
+          <label>Tiempo invertido (minutos)</label>
+          <input id="tiempo" type="text" inputmode="decimal" placeholder="Ej: 150">
+        </div>
+        <div>
+          <label>Valor por hora (tu mano de obra)</label>
+          <input id="hora" type="text" inputmode="decimal" placeholder="Ej: 3.7 o 3,7">
+        </div>
+      </div>
+
+      <div class="jmn-calcrow">
+        <span>Mano de obra por servicio</span>
+        <b id="manoOut">$0.00</b>
+      </div>
+
+      <div class="jmn-mini">Esto evita regalar tu tiempo.</div>
+    </div>
+
+    <!-- BLOQUE 3: GASTOS FIJOS -->
+    <div class="jmn-block">
+      <div class="jmn-block-head">
+        <h3>3) Gastos fijos del negocio</h3>
+        <span class="jmn-chip">Mensual ÷ Servicios</span>
+      </div>
+
+      <div class="jmn-2col">
+        <div>
+          <label>Gastos fijos mensuales</label>
+          <input id="fijos" type="text" inputmode="decimal" placeholder="Ej: 400">
+        </div>
+        <div>
+          <label>Servicios al mes (aprox.)</label>
+          <input id="servicios" type="text" inputmode="decimal" placeholder="Ej: 52" value="1">
+        </div>
+      </div>
+
+      <div class="jmn-calcrow">
+        <span>Gastos fijos por cliente</span>
+        <b id="fijosOut">$0.00</b>
+      </div>
+
+      <div class="jmn-mini">Renta, internet, luz, apps, transporte, publicidad, etc.</div>
+    </div>
+
+    <!-- BLOQUE 4: DEPRECIACIÓN -->
+    <div class="jmn-block">
+      <div class="jmn-block-head">
+        <h3>4) Depreciación mensual</h3>
+        <span class="jmn-chip">Mensual ÷ Servicios</span>
+      </div>
+
+      <div class="jmn-2col">
+        <div>
+          <label>Depreciación mensual (equipos/herramientas)</label>
+          <input id="depreciacion" type="text" inputmode="decimal" placeholder="Ej: 300">
+        </div>
+        <div>
+          <label>Servicios al mes (mismo valor)</label>
+          <input id="servicios2" type="text" inputmode="decimal" placeholder="Ej: 52" value="1">
+        </div>
+      </div>
+
+      <div class="jmn-calcrow">
+        <span>Depreciación por cliente</span>
+        <b id="depOut">$0.00</b>
+      </div>
+
+      <div class="jmn-mini">Lámpara, torno, aspiradora, sillas, mesas, mantenimiento.</div>
+    </div>
+
+    <!-- BLOQUE 5: RESULTADO GENERAL -->
+    <div class="jmn-block jmn-result">
+      <div class="jmn-block-head">
+        <h3>Resultado general</h3>
+        <span class="jmn-chip">Final</span>
+      </div>
+
+      <label>Ganancia deseada (%)</label>
+      <input id="ganancia" type="text" inputmode="decimal" value="30" placeholder="Ej: 30">
+
+      <button class="jmn-btn" onclick="calcularGeneral()">
+        <span>Calcular precio final</span><i class="jmn-arrow">→</i>
+      </button>
+
+      <div class="jmn-kpis" id="kpis" style="display:none;">
+        <div class="jmn-kpi">
+          <span>Costo unitario</span>
+          <b id="costo">$0.00</b>
+        </div>
+        <div class="jmn-kpi">
+          <span>Precio sugerido</span>
+          <b id="precio">$0.00</b>
+        </div>
+        <div class="jmn-kpi">
+          <span>Ganancia</span>
+          <b id="profit">$0.00</b>
+        </div>
+        <div class="jmn-kpi">
+          <span>Margen</span>
+          <b id="margen">0.0%</b>
+        </div>
+      </div>
+
+      <div class="jmn-actions">
+        <button class="jmn-btn jmn-btn-ghost" type="button" onclick="copiarResumen()">
+          Copiar resumen
+        </button>
+      </div>
+
+      <div class="jmn-mini" id="miniMsg">Tip: primero llena los bloques y luego calcula el precio final.</div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.jmn-calculadora{
+  background: radial-gradient(900px 420px at 20% 0%, rgba(201,162,39,.18), transparent 60%),
+              radial-gradient(900px 420px at 80% 10%, rgba(245,230,163,.12), transparent 55%),
+              #0b0b0b;
+  padding:42px;
+  border-radius:20px;
+  color:#fff;
+  font-family: Montserrat, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  box-shadow:0 24px 80px rgba(0,0,0,.65);
+  border:1px solid rgba(255,255,255,.06);
+  max-width:980px;
+  margin:40px auto;
+}
+.jmn-top{ text-align:center; margin-bottom:22px; }
+.jmn-badge{
+  display:inline-block;
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:12px;
+  letter-spacing:.6px;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.82);
+  border:1px solid rgba(255,215,0,.18);
+  background:rgba(255,255,255,.04);
+  backdrop-filter: blur(8px);
+  margin-bottom:10px;
+}
+.jmn-calculadora h2{ margin:0; font-weight:800; letter-spacing:.6px; font-size:26px; }
+.subtitle{ color:#b5b5b5; margin:10px 0 0 0; line-height:1.35; }
+
+.jmn-blocks{ display:grid; grid-template-columns: 1fr; gap:18px; }
+.jmn-block{
+  background:rgba(255,255,255,.03);
+  padding:22px;
+  border-radius:18px;
+  border:1px solid rgba(255,215,0,.12);
+  backdrop-filter:blur(10px);
+}
+.jmn-block-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+.jmn-block h3{
+  margin:0;
+  font-size:15px;
+  letter-spacing:.4px;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.92);
+}
+.jmn-chip{
+  font-size:11px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,215,0,.18);
+  background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.82);
+  text-transform:uppercase;
+  letter-spacing:.6px;
+}
+
+label{
+  display:block;
+  font-size:13px;
+  color:rgba(255,255,255,.78);
+  margin:12px 0 8px;
+}
+
+input{
+  width:100%;
+  display:block;
+  box-sizing:border-box;
+  padding:12px 14px;
+  background: rgba(17,17,17,.92);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  color:#fff;
+  font-size:15px;
+  outline:none;
+  -webkit-appearance:none;
+  appearance:none;
+  margin:0;
+  line-height:1.2;
+  transition:.2s ease;
+}
+input:focus{
+  border-color: rgba(245,230,163,.55);
+  box-shadow: 0 0 0 4px rgba(245,230,163,.10);
+  transform: translateY(-1px);
+}
+
+.jmn-2col{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:14px;
+}
+
+.jmn-calcrow{
+  margin-top:12px;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.22);
+}
+.jmn-calcrow span{ color:rgba(255,255,255,.78); font-size:13px; }
+.jmn-calcrow b{ color:#f5e6a3; font-size:18px; }
+
+.jmn-btn{
+  width:100%;
+  margin-top:14px;
+  padding:14px 16px;
+  border:none;
+  border-radius:14px;
+  font-weight:900;
+  cursor:pointer;
+  color:#0b0b0b;
+  background: linear-gradient(90deg,#c9a227,#f5e6a3);
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  letter-spacing:.4px;
+  text-transform:uppercase;
+  box-shadow: 0 16px 40px rgba(201,162,39,.18);
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+.jmn-btn::after{
+  content:"";
+  position:absolute;
+  top:-60%;
+  left:-40%;
+  width:60%;
+  height:220%;
+  transform: rotate(18deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+  opacity:0;
+}
+.jmn-btn:hover{ transform: translateY(-2px); box-shadow: 0 22px 60px rgba(201,162,39,.26); }
+.jmn-btn:hover::after{ opacity:.9; animation: jmnShine 1.1s ease forwards; }
+@keyframes jmnShine{ 0%{ transform: translateX(-60%) rotate(18deg);} 100%{ transform: translateX(260%) rotate(18deg);} }
+.jmn-arrow{ font-style:normal; font-weight:900; font-size:18px; line-height:1; }
+
+.jmn-btn-ghost{
+  background: transparent;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:none;
+}
+.jmn-btn-ghost:hover{ transform: translateY(-2px); border-color: rgba(245,230,163,.55); }
+
+.jmn-kpis{
+  margin-top:14px;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+}
+.jmn-kpi{
+  padding:14px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.20);
+}
+.jmn-kpi span{
+  display:block;
+  font-size:12px;
+  color:rgba(255,255,255,.72);
+  text-transform:uppercase;
+  letter-spacing:.7px;
+  margin-bottom:6px;
+}
+.jmn-kpi b{ font-size:20px; color:#f5e6a3; }
+
+.jmn-actions{ margin-top:12px; }
+
+.jmn-mini{
+  margin-top:10px;
+  font-size:12px;
+  color: rgba(255,255,255,.66);
+  line-height:1.35;
+}
+
+/* ===== MERMA UI ===== */
+.jmn-merma{ margin-top:10px; }
+.jmn-merma-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-top:8px;
+}
+.jmn-merma-val{
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.18);
+  color: rgba(255,255,255,.85);
+}
+/* ===== BARRA DE MERMA (LINEA DESLIZABLE) ===== */
+.jmn-range{
+  -webkit-appearance:none;
+  appearance:none;
+  width:100%;
+  height:30px;
+  background:transparent;
+  border:none;
+  margin-top:8px;
+  cursor:pointer;
+}
+
+/* línea */
+.jmn-range::-webkit-slider-runnable-track{
+  height:6px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#c9a227,#f5e6a3);
+}
+.jmn-range::-moz-range-track{
+  height:6px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#c9a227,#f5e6a3);
+}
+
+/* punto deslizante */
+.jmn-range::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:#0b0b0b;
+  border:2px solid #f5e6a3;
+  margin-top:-6px;
+}
+.jmn-range::-moz-range-thumb{
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:#0b0b0b;
+  border:2px solid #f5e6a3;
+}
+.jmn-range:focus{ box-shadow:none; transform:none; }
+
+@media(max-width:900px){
+  .jmn-2col{ grid-template-columns: 1fr; }
+  .jmn-kpis{ grid-template-columns: 1fr; }
+}
+@media(max-width:520px){
+  .jmn-calculadora{ padding:22px; margin:18px auto; border-radius:18px; }
+  .jmn-block{ padding:16px; border-radius:16px; }
+  .jmn-calculadora h2{ font-size:20px; }
+  .subtitle{ font-size:13px; }
+}
+</style>
+
+<script>
+function money(v){
+  return "$" + (Math.round((v + Number.EPSILON)*100)/100).toFixed(2);
+}
+
+/* Permite coma o punto, y también tolera símbolos ($, espacios) */
+function parseFlexNumber(value){
+  const s = (value ?? "").toString()
+    .trim()
+    .replace(/\s/g,"")
+    .replace(/\$/g,"")
+    .replace(/,/g,".");
+  const n = parseFloat(s);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function safeNum(id){
+  return parseFlexNumber(document.getElementById(id)?.value);
+}
+
+function safeInt(id, min=1){
+  const n = Math.round(safeNum(id));
+  return Math.max(min, Number.isFinite(n) ? n : min);
+}
+
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+function getMermaPct(){
+  const raw = safeNum("merma") || 8;
+  return clamp(raw, 5, 10);
+}
+
+function updateSubtotals(){
+  // Merma UI
+  const mermaPct = getMermaPct();
+  const mermaVal = document.getElementById("mermaVal");
+  if(mermaVal) mermaVal.textContent = mermaPct.toString();
+
+  // Material + merma
+  const materialBase = safeNum("material");
+  const materialAdj = materialBase * (1 + mermaPct/100);
+  document.getElementById("materialOut").innerText = money(materialAdj);
+
+  // Mano de obra
+  const tiempo = safeNum("tiempo");
+  const hora = safeNum("hora");
+  const mano = (tiempo/60) * hora;
+  document.getElementById("manoOut").innerText = money(mano);
+
+  // Fijos por cliente
+  const fijos = safeNum("fijos");
+  const serv1 = safeInt("servicios", 1);
+  const fijosCliente = fijos / serv1;
+  document.getElementById("fijosOut").innerText = money(fijosCliente);
+
+  // Depreciación por cliente
+  const dep = safeNum("depreciacion");
+  const serv2 = safeInt("servicios2", 1);
+  const depCliente = dep / serv2;
+  document.getElementById("depOut").innerText = money(depCliente);
+}
+
+function calcularGeneral(){
+  updateSubtotals();
+
+  const nombre = (document.getElementById("servicioNombre").value || "").trim();
+
+  const mermaPct = getMermaPct();
+  const materialBase = safeNum("material");
+  const materialAdj = materialBase * (1 + mermaPct/100);
+
+  const tiempo = safeNum("tiempo");
+  const hora = safeNum("hora");
+  const mano = (tiempo/60) * hora;
+
+  const fijos = safeNum("fijos");
+  const serv1 = safeInt("servicios", 1);
+  const fijosCliente = fijos / serv1;
+
+  const dep = safeNum("depreciacion");
+  const serv2 = safeInt("servicios2", 1);
+  const depCliente = dep / serv2;
+
+  const ganPct = safeNum("ganancia");
+
+  const costo = materialAdj + mano + fijosCliente + depCliente;
+  const precio = costo * (1 + ganPct/100);
+  const profit = precio - costo;
+  const margen = (precio > 0) ? (profit / precio) * 100 : 0;
+
+  document.getElementById("costo").innerText = money(costo);
+  document.getElementById("precio").innerText = money(precio);
+  document.getElementById("profit").innerText = money(profit);
+  document.getElementById("margen").innerText = margen.toFixed(1) + "%";
+
+  document.getElementById("kpis").style.display = "grid";
+
+  const msg = [];
+  if(!tiempo || !hora) msg.push("Completa tiempo y valor/hora para mano de obra real.");
+  if(!fijos) msg.push("Si gastos fijos = 0, el costo queda subestimado.");
+  if(!dep) msg.push("Si depreciación = 0, no proteges tus equipos.");
+
+  const title = nombre ? `Servicio: ${nombre}. ` : "";
+  document.getElementById("miniMsg").innerText = msg.length
+    ? title + "Nota: " + msg.join(" ")
+    : title + "Cálculo completo. Ya tienes un precio basado en costos reales.";
+
+  window.__jmn_last = {
+    nombre,
+    materialBase,
+    mermaPct,
+    materialAdj,
+    mano,
+    fijosCliente,
+    depCliente,
+    ganPct,
+    costo,
+    precio,
+    profit,
+    margen
+  };
+}
+
+async function copiarResumen(){
+  if(!window.__jmn_last) calcularGeneral();
+  const d = window.__jmn_last;
+  if(!d) return;
+
+  const name = d.nombre ? `SERVICIO: ${d.nombre}\n` : "";
+  const text =
+`${name}RESUMEN DE COSTOS (por servicio)
+- Material (base): ${money(d.materialBase)}
+- Merma aplicada: ${d.mermaPct.toFixed(1)}%
+- Material + merma: ${money(d.materialAdj)}
+
+- Mano de obra: ${money(d.mano)}
+- Gastos fijos por cliente: ${money(d.fijosCliente)}
+- Depreciación por cliente: ${money(d.depCliente)}
+
+COSTO UNITARIO: ${money(d.costo)}
+GANANCIA DESEADA: ${d.ganPct.toFixed(1)}%
+PRECIO SUGERIDO: ${money(d.precio)}
+GANANCIA: ${money(d.profit)}
+MARGEN: ${d.margen.toFixed(1)}%`;
+
+  try{
+    await navigator.clipboard.writeText(text);
+    document.getElementById("miniMsg").innerText = "✅ Resumen copiado al portapapeles.";
+  }catch(e){
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    document.getElementById("miniMsg").innerText = "✅ Resumen copiado (modo compatibilidad).";
+  }
+}
+
+/* Listeners */
+["material","tiempo","hora","fijos","servicios","depreciacion","servicios2","merma"].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el){
+    el.addEventListener("input", updateSubtotals);
+    el.addEventListener("change", updateSubtotals);
+  }
+});
+
+updateSubtotals();
+</script>
+
+  <!-- Registro PWA -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js");
+      });
+    }
+  </script>
+
+</body>
+</html>
